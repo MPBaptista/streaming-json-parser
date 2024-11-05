@@ -20,7 +20,7 @@ class StreamingJsonParser:
 
         for char in buffer:
             if char not in actions:
-                self._handle_char(char)
+                self._handle_non_special_character(char)
             else:
                 actions[char]()
 
@@ -63,7 +63,7 @@ class StreamingJsonParser:
                 self.stack[-1][self.current_key] = self.current_value
             self.current_key, self.current_value = None, None
 
-    def _handle_char(self, char):
+    def _handle_non_special_character(self, char):
         if self.in_string:
             self.partial_string += char
         elif not self.in_string and char.strip():
@@ -72,7 +72,7 @@ class StreamingJsonParser:
             else:
                 self.current_value += char
 
-    def get(self): 
+    def get(self) -> dict: 
         if self.current_key and self.current_value is not None and self.stack:
             self.stack[-1][self.current_key] = self.current_value
             self.current_key, self.current_value = None, None
@@ -131,6 +131,11 @@ class TestStreamingJsonParser(unittest.TestCase):
         parser = StreamingJsonParser()
         parser.consume('{"foo": {"foo":"bar"}}')
         assert parser.get() == {"foo": {"foo":"bar"}}
+
+    def test_suffix_streaming_json_parser(self):
+        parser = StreamingJsonParser()
+        parser.consume('ar"}')
+        assert parser.get() == {}
 
 if __name__ == '__main__':
     unittest.main()
