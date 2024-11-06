@@ -1,5 +1,6 @@
 import unittest
 
+
 class StreamingJsonParser:
     def __init__(self):
         """
@@ -14,7 +15,7 @@ class StreamingJsonParser:
         self.in_string = False
         self.partial_string = ""
         self.result = {}
-        
+
     def consume(self, buffer: str):
         """
         Consumes a string buffer and attempts to parse it.
@@ -77,7 +78,7 @@ class StreamingJsonParser:
 
     def _handle_colon(self):
         pass
-    
+
     def _handle_quote(self):
         """
         Handles a '"' character in the input buffer.
@@ -97,7 +98,7 @@ class StreamingJsonParser:
         else:
             self.in_string = True
             self.partial_string = ""
-            
+
     def _handle_comma(self):
         """
         Handles a ',' character in the input buffer.
@@ -127,7 +128,7 @@ class StreamingJsonParser:
             else:
                 self.current_value += char
 
-    def get(self) -> dict: 
+    def get(self) -> dict:
         """
         Returns the parsed JSON object as a dictionary.
 
@@ -147,6 +148,7 @@ class StreamingJsonParser:
             self.result = self.stack.pop()
         return self.result
 
+
 class TestStreamingJsonParser(unittest.TestCase):
     def test_streaming_json_parser(self):
         parser = StreamingJsonParser()
@@ -164,7 +166,7 @@ class TestStreamingJsonParser(unittest.TestCase):
         parser.consume('{"fo')
         parser.consume('o": "bar"}')
         assert parser.get() == {"foo": "bar"}
-    
+
     def test_chunked_value_streaming_json_parser(self):
         parser = StreamingJsonParser()
         parser.consume('{"foo": "b')
@@ -183,9 +185,9 @@ class TestStreamingJsonParser(unittest.TestCase):
 
     def test_opening_bracket_streaming_json_parser(self):
         parser = StreamingJsonParser()
-        parser.consume('{')
+        parser.consume("{")
         assert parser.get() == {}
-    
+
     def test_key_without_value_streaming_json_parser(self):
         parser = StreamingJsonParser()
         parser.consume('{"tes"')
@@ -196,5 +198,6 @@ class TestStreamingJsonParser(unittest.TestCase):
         parser.consume('ar"}')
         assert parser.get() == {}
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()
