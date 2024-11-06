@@ -79,7 +79,7 @@ class StreamingJsonParser:
         elif self.current_key is not None and self.current_value is None and self.stack:
             self.stack[-1][self.current_key] = self.partial_string
             self.current_key, self.current_value = None, None
-        if self.result == {} and self.stack is not None:
+        if self.result == {} and self.stack:
             self.result = self.stack.pop()
         return self.result
 
